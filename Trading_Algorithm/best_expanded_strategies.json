@@ -1,0 +1,202 @@
+{
+    "OJ=F": {
+        "strategy": "buy_and_hold",
+        "parameters": {},
+        "cumulative_returns": 0.3500417571914528
+    },
+    "SB=F": {
+        "strategy": "mean_reversion_deviation",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02,
+            "mode": "deviation"
+        },
+        "cumulative_returns": 0.06749310041892809
+    },
+    "KC=F": {
+        "strategy": "bollinger_bands",
+        "parameters": {
+            "window": 20,
+            "num_std": 2
+        },
+        "cumulative_returns": 0.33549117845770493
+    },
+    "CC=F": {
+        "strategy": "bollinger_bands",
+        "parameters": {
+            "window": 20,
+            "num_std": 2
+        },
+        "cumulative_returns": 0.6625291395789741
+    },
+    "LE=F": {
+        "strategy": "rsi",
+        "parameters": {
+            "window": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "cumulative_returns": 0.1565301487430354
+    },
+    "ZO=F": {
+        "strategy": "moving_average_crossover",
+        "parameters": {
+            "short_window": 50,
+            "long_window": 200
+        },
+        "cumulative_returns": 0.0
+    },
+    "HE=F": {
+        "strategy": "mean_reversion_deviation",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02,
+            "mode": "deviation"
+        },
+        "cumulative_returns": 0.18846929274774893
+    },
+    "ZW=F": {
+        "strategy": "mean_reversion_crossover",
+        "parameters": {
+            "window": 20,
+            "mode": "crossover"
+        },
+        "cumulative_returns": 0.15871603463498463
+    },
+    "ZC=F": {
+        "strategy": "momentum",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02
+        },
+        "cumulative_returns": 0.007425273415500366
+    },
+    "CL=F": {
+        "strategy": "breakout",
+        "parameters": {
+            "window": 20,
+            "quantile": 0.75
+        },
+        "cumulative_returns": 0.06927797427929105
+    },
+    "NG=F": {
+        "strategy": "bollinger_bands",
+        "parameters": {
+            "window": 20,
+            "num_std": 2
+        },
+        "cumulative_returns": 0.23587762631882625
+    },
+    "ZB=F": {
+        "strategy": "rsi",
+        "parameters": {
+            "window": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "cumulative_returns": 0.0660088472466781
+    },
+    "RB=F": {
+        "strategy": "mean_reversion_deviation",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02,
+            "mode": "deviation"
+        },
+        "cumulative_returns": 0.00143719782236007
+    },
+    "HO=F": {
+        "strategy": "breakout",
+        "parameters": {
+            "window": 20,
+            "quantile": 0.75
+        },
+        "cumulative_returns": 0.026571546058429707
+    },
+    "PL=F": {
+        "strategy": "bollinger_bands",
+        "parameters": {
+            "window": 20,
+            "num_std": 2
+        },
+        "cumulative_returns": 0.12406390531740563
+    },
+    "PA=F": {
+        "strategy": "buy_and_hold",
+        "parameters": {},
+        "cumulative_returns": 0.06180709862713918
+    },
+    "HG=F": {
+        "strategy": "rsi",
+        "parameters": {
+            "window": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "cumulative_returns": 0.17279833556966473
+    },
+    "ZS=F": {
+        "strategy": "mean_reversion_crossover",
+        "parameters": {
+            "window": 20,
+            "mode": "crossover"
+        },
+        "cumulative_returns": 0.008632650355449356
+    },
+    "ZM=F": {
+        "strategy": "breakout",
+        "parameters": {
+            "window": 20,
+            "quantile": 0.75
+        },
+        "cumulative_returns": 0.03256097856622675
+    },
+    "ZR=F": {
+        "strategy": "mean_reversion_deviation",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02,
+            "mode": "deviation"
+        },
+        "cumulative_returns": 101.87015933426443
+    },
+    "6A=F": {
+        "strategy": "rsi",
+        "parameters": {
+            "window": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "cumulative_returns": 0.05714179488562221
+    },
+    "6J=F": {
+        "strategy": "breakout",
+        "parameters": {
+            "window": 20,
+            "quantile": 0.75
+        },
+        "cumulative_returns": 0.07155686279579165
+    },
+    "DX=F": {
+        "strategy": "momentum",
+        "parameters": {
+            "window": 20,
+            "threshold": 0.02
+        },
+        "cumulative_returns": 0.008396939196498976
+    },
+    "SI=F": {
+        "strategy": "buy_and_hold",
+        "parameters": {},
+        "cumulative_returns": 0.21806130004178637
+    },
+    "GC=F": {
+        "strategy": "rsi",
+        "parameters": {
+            "window": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "cumulative_returns": 0.18581660947144985
+    }
+}
