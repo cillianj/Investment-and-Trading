@@ -135,14 +135,18 @@ def mean_reversion_strategy(data, window=20, threshold=0.02, mode='deviation'):
     
     """
     data['moving_avg'] = data['Close'].rolling(window).mean()
-    data['signal'] = 1
+    data['signal'] = 0
 
     if mode == 'deviation':
         data['signal'] = np.where(
-            (data['Close'] - data['moving_avg']) / data['moving_avg'] < -threshold, 1, 0
+            (data['Close'] - data['moving_avg']) / data['moving_avg'] < -threshold, 1, 0 #buy
+        )
+        data['signal'] = np.where(
+            (data['Close'] - data['moving_avg']) / data['moving_avg'] > threshold, -1, data['signal'] #sell
         )
     elif mode == 'crossover':
-        data['signal'] = np.where(data['Close'] > data['moving_avg'], 1, 0)
+        data['signal'] = np.where(data['Close'] > data['moving_avg'], 1, 0) #sell
+        data['signal'] = np.where(data['Close'] < data['moving_avg'], -1, data['signal']) #buy
     else:
         logging.warning(f"Unsupported mode '{mode}' for mean_reversion_strategy.")
 
@@ -207,7 +211,7 @@ def momentum_strategy(data, window=20, threshold=0.02):
      """
     
     data['momentum'] = data['Close'].pct_change(periods=window)
-    data['signal'] = 1
+    data['signal'] = 0
     data['signal'] = np.where(data['momentum'] > threshold, 1, data['signal'])
     data['signal'] = np.where(data['momentum'] < -threshold, -1, data['signal'])
     data['desired_position'] = data['signal'].shift().fillna(0)
@@ -240,7 +244,7 @@ def rsi_strategy(data, window=14, overbought=70, oversold=30):
     loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
     rs = gain / loss
     data['RSI'] = 100 - (100 / (1 + rs))
-    data['signal'] = 1
+    data['signal'] = 0
     data['signal'] = np.where(data['RSI'] < oversold, 1, data['signal'])
     data['signal'] = np.where(data['RSI'] > overbought, -1, data['signal'])
     data['desired_position'] = data['signal'].shift().fillna(0)
@@ -270,7 +274,7 @@ def moving_average_crossover_strategy(data, short_window=50, long_window=200):
     """
     data['short_ma'] = data['Close'].rolling(window=short_window).mean()
     data['long_ma'] = data['Close'].rolling(window=long_window).mean()
-    data['signal'] = 1
+    data['signal'] = 0
     data['signal'] = np.where(data['short_ma'] > data['long_ma'], 1, data['signal'])
     data['signal'] = np.where(data['short_ma'] < data['long_ma'], -1, data['signal'])
     data['desired_position'] = data['signal'].shift().fillna(0)
@@ -310,7 +314,7 @@ def bollinger_bands_strategy(data, window=20, num_std=2):
    data['std'] = data['Close'].rolling(window).std()
    data['upper_band'] = data['ma'] + (data['std'] * num_std)
    data['lower_band'] = data['ma'] - (data['std'] * num_std)
-   data['signal'] = 1
+   data['signal'] = 0
    data['signal'] = np.where(data['Close'] < data['lower_band'], 1, data['signal'])
    data['signal'] = np.where(data['Close'] > data['upper_band'], -1, data['signal'])
    data['desired_position'] = data['signal'].shift().fillna(0)
@@ -352,12 +356,17 @@ def fetch_data_for_assets(assets, start_date, end_date):
            tickers=list(assets),
            start=start_date,
            end=end_date,
-           interval='1d',  #We will trade hourly as we want a more active algorithm
+           interval='1m',  #We will trade hourly as we want a more active algorithm
            group_by='ticker',
            threads=True,
            auto_adjust=True  # Adjust for dividends and splits
        )
 
+      
+       
+
+    
+       
        """# Check if data is fetched for each asset
        for asset in assets:
            if asset not in data.columns.levels[0]:
@@ -546,12 +555,12 @@ def backtest(start_date, end_date):
 
             # Debug: Print strategy signal
             logging.debug(f"Symbol: {symbol}, Date: {current_date}, Position: {position}, Price: {current_price}")
-            print(f"Symbol: {symbol}, Date: {current_date}, Position: {position}, Price: {current_price}")
+            #print(f"Symbol: {symbol}, Date: {current_date}, Position: {position}, Price: {current_price}")
 
             # Execute trades based on position
             if position == 1:
                 # Buy signal
-                allocation_fraction = 0.02 # Allocate 10% of available cash per buy signal
+                allocation_fraction = 0.05 # Allocate x% of available cash per buy signal
                 investment_amount = available_cash * allocation_fraction
                 quantity = investment_amount // current_price  # Number of shares to buy (integer)
                 if quantity > 0:
@@ -563,7 +572,7 @@ def backtest(start_date, end_date):
                         quantity * current_price, available_cash
                     ]
                     logging.info(f"BUY: {quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
-                    print(f"BUY: {quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
+                    #print(f"BUY: {quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
             elif position == -1 and holdings[symbol] > 0:
                 # Sell signal
                 sell_quantity = holdings[symbol]
@@ -576,7 +585,7 @@ def backtest(start_date, end_date):
                     sell_amount, available_cash
                 ]
                 logging.info(f"SELL: {sell_quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
-                print(f"SELL: {sell_quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
+                #print(f"SELL: {sell_quantity} shares of {symbol} at ${current_price:.2f} on {current_date}")
 
             # Calculate daily return from holdings
             if holdings[symbol] > 0:
@@ -594,10 +603,10 @@ def backtest(start_date, end_date):
         total_holdings = portfolio_df.loc[current_date, [f'Holdings_{s}' for s in assets]].sum()
         # Update Total Portfolio Value
         portfolio_df.loc[current_date, 'Total Portfolio Value'] = total_holdings + available_cash
-
+        portfolio_df.loc[current_date, 'Uninvested Cash'] = available_cash
         # Debug: Log portfolio value
         logging.debug(f"Date: {current_date}, Portfolio Value: ${portfolio_value:.2f}, Available Cash: ${available_cash:.2f}")
-        print(f"Date: {current_date}, Portfolio Value: ${portfolio_value:.2f}, Available Cash: ${available_cash:.2f}")
+        #print(f"Date: {current_date}, Portfolio Value: ${portfolio_value:.2f}, Available Cash: ${available_cash:.2f}")
 
     # Save portfolio history and trade logs to CSV
     portfolio_df.to_csv('portfolio_history.csv')
@@ -648,3 +657,18 @@ if __name__ == "__main__":
         print("Backtest failed. Please check 'trading.log' for more details.")
 
 
+def plot_portfolio_df(portfolio_df):
+    plt.figure(figsize=(14, 8))
+    for column in portfolio_df.columns:
+        plt.plot(portfolio_df.index, portfolio_df[column], label=column)
+
+    plt.title('Portfolio Analysis')
+    plt.xlabel('Date')
+    plt.ylabel('Value')
+    plt.legend(loc='best')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+# Call the function to plot
+plot_portfolio_df(portfolio_df)
